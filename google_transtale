@@ -1,0 +1,29 @@
+<?php
+
+function translate($word,$lang_from,$lang_to)
+{
+    $query_data = array( #q = world , sl = world from  , tl - world_to
+        'client' => 'x',
+        'q' => $word,
+        'sl' => $lang_from,
+        'tl' => $lang_to
+    );
+    $url = 'https://translate.google.ru/translate_a/t';
+    $options = array(
+        'http' => array(
+            'user_agent' => 'Mozilla/5.0 (Windows NT 6.0; rv:26.0) Gecko/20100101 Firefox/45.0', # ставимо юзер агент , бо гугл будет давати капчу
+            'method' => 'POST', #метод
+            'header' => 'Content-type: application/x-www-form-urlencoded',
+            'content' => http_build_query($query_data)
+        )
+    );
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+    return json_decode( $response);
+}
+
+
+$result = translate('Hello World','EN','RU');
+
+var_dump($result);
